@@ -32,23 +32,23 @@ import MapKit
 
 /// Handlers
 
-public typealias LocationHandlerError = (LocationError -> Void)
-public typealias LocationHandlerSuccess = (CLLocation -> Void)
-public typealias LocationHandlerPaused = (CLLocation? -> Void)
+public typealias LocationHandlerError = ((LocationError) -> Void)
+public typealias LocationHandlerSuccess = ((CLLocation) -> Void)
+public typealias LocationHandlerPaused = ((CLLocation?) -> Void)
 
-public typealias RLocationErrorHandler = (LocationError -> Void)
-public typealias RLocationSuccessHandler = (CLPlacemark -> Void)
+public typealias RLocationErrorHandler = ((LocationError) -> Void)
+public typealias RLocationSuccessHandler = ((CLPlacemark) -> Void)
 
-public typealias HeadingHandlerError = (LocationError -> Void)
-public typealias HeadingHandlerSuccess = (CLHeading -> Void)
-public typealias HeadingHandlerCalibration = (Void -> Bool)
+public typealias HeadingHandlerError = ((LocationError) -> Void)
+public typealias HeadingHandlerSuccess = ((CLHeading) -> Void)
+public typealias HeadingHandlerCalibration = ((Void) -> Bool)
 
-public typealias RegionHandlerStateDidChange = (Void -> Void)
-public typealias RegionHandlerError = (LocationError -> Void)
+public typealias RegionHandlerStateDidChange = ((Void) -> Void)
+public typealias RegionHandlerError = ((LocationError) -> Void)
 
-public typealias VisitHandler = (CLVisit -> Void)
-public typealias DidRangeBeaconsHandler = ([CLBeacon] -> Void)
-public typealias RangeBeaconsDidFailHandler = (LocationError -> Void)
+public typealias VisitHandler = ((CLVisit) -> Void)
+public typealias DidRangeBeaconsHandler = (([CLBeacon]) -> Void)
+public typealias RangeBeaconsDidFailHandler = ((LocationError) -> Void)
 
 /**
 Type of service to used to perform the request
@@ -94,7 +94,7 @@ Define all possible error related to SwiftLocation library
 - NoDataReturned:              No data returned from this request
 - NotSupported:                Feature is not supported by the current hardware
 */
-public enum LocationError: ErrorType, CustomStringConvertible {
+public enum LocationError: ErrorProtocol, CustomStringConvertible {
 	case MissingAuthorizationInPlist
 	case RequestTimeout
 	case AuthorizationDidChange(newStatus: CLAuthorizationStatus)
@@ -179,15 +179,15 @@ extension CLLocationManager {
 			} else {
 				let status = CLLocationManager.authorizationStatus()
 				switch status {
-				case .NotDetermined:
+				case .notDetermined:
 					return .Undetermined
-				case .Denied:
+				case .denied:
 					return .Denied
-				case .Restricted:
+				case .restricted:
 					return .Restricted
-				case .AuthorizedAlways:
+				case .authorizedAlways:
 					return .Authorized(always: true)
-				case .AuthorizedWhenInUse:
+				case .authorizedWhenInUse:
 					return .Authorized(always: false)
 				}
 			}
@@ -201,8 +201,8 @@ extension CLLocationManager {
 		/// Value of these keys if the message you want to show into system location request message the first time you
 		/// will access to the location manager.
 	internal static var bundleLocationAuthType: LocationAuthType {
-		let hasAlwaysAuth = (NSBundle.mainBundle().objectForInfoDictionaryKey("NSLocationAlwaysUsageDescription") != nil)
-		let hasInUseAuth = (NSBundle.mainBundle().objectForInfoDictionaryKey("NSLocationWhenInUseUsageDescription") != nil)
+		let hasAlwaysAuth = (Bundle.main.objectForInfoDictionaryKey("NSLocationAlwaysUsageDescription") != nil)
+		let hasInUseAuth = (Bundle.main.objectForInfoDictionaryKey("NSLocationWhenInUseUsageDescription") != nil)
 		
 		if hasAlwaysAuth == true { return .Always }
 		if hasInUseAuth == true { return .OnlyInUse }

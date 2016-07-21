@@ -67,7 +67,7 @@ public class RegionRequest : Equatable {
 	- returns: the request itself you can add to the main queue
 	*/
 	public init(identifier: String?, location: CLLocationCoordinate2D, radius: CLLocationDistance) {
-		let regionID = (identifier ?? NSUUID().UUIDString)
+		let regionID = (identifier ?? NSUUID().uuidString)
 		self.region = CLCircularRegion(center: location, radius: radius, identifier: regionID)
 	}
 	
@@ -115,7 +115,7 @@ public class RegionRequest : Equatable {
 	- throws: throws error if monitor is not supported
 	*/
 	public func start() throws {
-		try BeaconManager.shared.addMonitorForGeographicRegion(self)
+		try BeaconManager.shared.addMonitorForGeographicRegion(region: self)
 	}
 	
 	/**

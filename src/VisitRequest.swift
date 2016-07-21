@@ -38,7 +38,7 @@ public class VisitRequest {
 
 		/// Private vars
 	internal(set) var isEnabled: Bool = true
-	internal var UUID: String = NSUUID().UUIDString
+	internal var UUID: String = NSUUID().uuidString
 	
 	
 	/**
@@ -68,13 +68,13 @@ public class VisitRequest {
 	Start a new visit request
 	*/
 	public func start() {
-		LocationManager.shared.addVisitRequest(self)
+		LocationManager.shared.addVisitRequest(handler: self)
 	}
 	
 	/**
 	Stop a visit request and remove it from the queue
 	*/
 	public func stop() {
-		LocationManager.shared.stopObservingInterestingPlaces(self)
+		LocationManager.shared.stopObservingInterestingPlaces(request: self)
 	}
 }

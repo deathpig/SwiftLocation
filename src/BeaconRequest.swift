@@ -43,7 +43,7 @@ public class BeaconRequest: Equatable {
 		/// This property contains the identifier that you use to identify your company’s beacons. You typically generate only one UUID for your company’s beacons but can generate more as needed
 	public var UUID: String {
 		get {
-			return beaconRegion!.proximityUUID.UUIDString
+			return beaconRegion!.proximityUUID.uuidString
 		}
 	}
 	
@@ -81,8 +81,8 @@ public class BeaconRequest: Equatable {
 	- returns: request you can add into the main queue
 	*/
 	public init(beaconFamilyWithUUID uuid: String, identifier: String? = nil) {
-		self.identifier = (identifier ?? NSUUID().UUIDString)
-		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(UUIDString: self.UUID)!, identifier: self.identifier)
+		self.identifier = (identifier ?? NSUUID().uuidString)
+		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(uuidString: self.UUID)! as UUID, identifier: self.identifier)
 	}
 	
 	/**
@@ -96,16 +96,16 @@ public class BeaconRequest: Equatable {
 	- returns: request you can add into the main queue
 	*/
 	public init(beaconWithUUID uuid: String, major: CLBeaconMajorValue, minor: CLBeaconMajorValue, identifier: String? = nil) {
-		self.identifier = (identifier ?? NSUUID().UUIDString)
-		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(UUIDString: self.UUID)!, major: self.majorID!, minor: self.minorID!, identifier: self.identifier)
+		self.identifier = (identifier ?? NSUUID().uuidString)
+		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(uuidString: self.UUID)! as UUID, major: self.majorID!, minor: self.minorID!, identifier: self.identifier)
 	}
 
 	//MARK: Private
 	
-	internal func dataToAdvertise() -> [String:AnyObject!] {
-		let data: [String:AnyObject!] = [
+	internal func dataToAdvertise() -> [String:AnyObject?] {
+		let data: [String:AnyObject?] = [
 			CBAdvertisementDataLocalNameKey : self.identifier,
-			CBAdvertisementDataManufacturerDataKey : self.beaconRegion!.peripheralDataWithMeasuredPower(nil),
+			CBAdvertisementDataManufacturerDataKey : self.beaconRegion!.peripheralData(withMeasuredPower: nil),
 			CBAdvertisementDataServiceUUIDsKey : [self.UUID]]
 		return data
 	}

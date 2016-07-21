@@ -31,7 +31,7 @@ import CoreLocation
 
 public class HeadingRequest: LocationManagerRequest {
 		/// Unique identifier of the heading request
-	internal var UUID: String = NSUUID().UUIDString
+	internal var UUID: String = NSUUID().uuidString
 		/// Handler to call when a new heading value is received
 	internal var onSuccess: HeadingHandlerSuccess?
 		/// Handler to call when an error has occurred
@@ -115,7 +115,7 @@ public class HeadingRequest: LocationManagerRequest {
 	*/
 	public func start() {
 		self.isEnabled = true
-		LocationManager.shared.addHeadingRequest(self)
+		LocationManager.shared.addHeadingRequest(handler: self)
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class HeadingRequest: LocationManagerRequest {
 	*/
 	public func stop() {
 		self.isEnabled = false
-		LocationManager.shared.stopObservingHeading(self)
+		LocationManager.shared.stopObservingHeading(request: self)
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class HeadingRequest: LocationManagerRequest {
 			return
 		}
 		
-		if self.validateHeading(heading!) == true {
+		if self.validateHeading(heading: heading!) == true {
 			self.lastHeading = heading
 			self.onSuccess?(self.lastHeading!)
 		}
