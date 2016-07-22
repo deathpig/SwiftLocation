@@ -38,7 +38,7 @@ public class VisitRequest {
 
 		/// Private vars
 	internal(set) var isEnabled: Bool = true
-	internal var UUID: String = NSUUID().UUIDString
+	internal var UUID: String = Foundation.UUID().uuidString
 	
 	
 	/**
@@ -59,7 +59,7 @@ public class VisitRequest {
 	
 	- returns: self instance, used to make the function chainable
 	*/
-	public func onDidVisit(handler: VisitHandler?) -> VisitRequest {
+	public func onDidVisit(_ handler: VisitHandler?) -> VisitRequest {
 		self.onDidVisitPlace = handler
 		return self
 	}

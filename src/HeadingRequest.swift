@@ -31,7 +31,7 @@ import CoreLocation
 
 public class HeadingRequest: LocationManagerRequest {
 		/// Unique identifier of the heading request
-	internal var UUID: String = NSUUID().UUIDString
+	internal var UUID: String = Foundation.UUID().uuidString
 		/// Handler to call when a new heading value is received
 	internal var onSuccess: HeadingHandlerSuccess?
 		/// Handler to call when an error has occurred
@@ -79,7 +79,7 @@ public class HeadingRequest: LocationManagerRequest {
 	
 	- returns: self, used to make the function chainable
 	*/
-	public func onSuccess(handler :HeadingHandlerSuccess) -> HeadingRequest {
+	public func onSuccess(_ handler :HeadingHandlerSuccess) -> HeadingRequest {
 		self.onSuccess = handler
 		return self
 	}
@@ -91,7 +91,7 @@ public class HeadingRequest: LocationManagerRequest {
 	
 	- returns: self, used to make the function chainable
 	*/
-	public func onError(handler :HeadingHandlerError) -> HeadingRequest {
+	public func onError(_ handler :HeadingHandlerError) -> HeadingRequest {
 		self.onError = handler
 		return self
 	}
@@ -105,7 +105,7 @@ public class HeadingRequest: LocationManagerRequest {
 	
 	- returns: self, used to make the function chainable
 	*/
-	public func onCalibrationRequired(handler :HeadingHandlerCalibration?) -> HeadingRequest {
+	public func onCalibrationRequired(_ handler :HeadingHandlerCalibration?) -> HeadingRequest {
 		self.onCalibrationRequired = handler
 		return self
 	}
@@ -135,9 +135,9 @@ public class HeadingRequest: LocationManagerRequest {
 	
 	//MARK: - Private
 	
-	internal func didReceiveEventFromManager(error: NSError?, heading: CLHeading?) {
+	internal func didReceiveEventFromManager(_ error: NSError?, heading: CLHeading?) {
 		if error != nil {
-			self.onError?(LocationError.LocationManager(error: error!))
+			self.onError?(LocationError.locationManager(error: error!))
 			self.stop()
 			return
 		}
@@ -148,7 +148,7 @@ public class HeadingRequest: LocationManagerRequest {
 		}
 	}
 	
-	private func validateHeading(heading: CLHeading) -> Bool {
+	private func validateHeading(_ heading: CLHeading) -> Bool {
 		guard let lastHeading = self.lastHeading else { return true }
 		
 		if heading.timestamp.timeIntervalSince1970 <= lastHeading.timestamp.timeIntervalSince1970 {

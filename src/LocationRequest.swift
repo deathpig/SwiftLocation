@@ -38,9 +38,9 @@ public class LocationRequest: LocationManagerRequest {
 		/// Handler called on pauses
 	internal var onPausesHandler: LocationHandlerPaused?
 		/// Timeout timer
-	private var timeoutTimer: NSTimer?
+	private var timeoutTimer: Timer?
 		/// Unique identifier of the request
-	internal var UUID: String = NSUUID().UUIDString
+	internal var UUID: String = Foundation.UUID().uuidString
 		/// Enable/disable ability of the request object to receive updates when into the queue
 	internal var isEnabled: Bool = true {
 		didSet {
@@ -51,7 +51,7 @@ public class LocationRequest: LocationManagerRequest {
 	
 	/// Type of activity to monitor.
 	/// The location manager uses the information in this property as a cue to determine when location updates may be automatically paused
-	public var activityType: CLActivityType = .Other {
+	public var activityType: CLActivityType = .other {
 		didSet {
 			LocationManager.shared.updateLocationUpdateService()
 		}
@@ -62,20 +62,20 @@ public class LocationRequest: LocationManagerRequest {
 		/// and when a request receive a new update. If no new updates are received inside this interval
 		/// request will be aborted.
 		/// A nil value means "do not use timeout".
-	public var timeout: NSTimeInterval? = nil
+	public var timeout: TimeInterval? = nil
 	
 		/// This is the last location received for this request. Maybe nil if any valid request is received yet.
 	private(set) var lastLocation: CLLocation?
 	
 		/// This is the frequency internval you want to receive updates about this monitor session
-	public var frequency: UpdateFrequency = .Continuous {
+	public var frequency: UpdateFrequency = .continuous {
 		didSet {
 			LocationManager.shared.updateLocationUpdateService()
 		}
 	}
 	
 		/// This is the accuracy of location you consider valid for this monitor session
-	public var accuracy: Accuracy = .City {
+	public var accuracy: Accuracy = .city {
 		didSet {
 			LocationManager.shared.updateLocationUpdateService()
 		}
@@ -101,7 +101,7 @@ public class LocationRequest: LocationManagerRequest {
 	
 	- returns: return self instance in order to perform a chain of handlers
 	*/
-	public func onError(err: LocationHandlerError) -> LocationRequest {
+	public func onError(_ err: LocationHandlerError) -> LocationRequest {
 		self.onErrorHandler = err
 		return self
 	}
@@ -113,7 +113,7 @@ public class LocationRequest: LocationManagerRequest {
 	
 	- returns: return self instance in order to perform a chain of handlers
 	*/
-	public func onSuccess(succ: LocationHandlerSuccess) -> LocationRequest {
+	public func onSuccess(_ succ: LocationHandlerSuccess) -> LocationRequest {
 		self.onSuccessHandler = succ
 		return self
 	}
@@ -127,7 +127,7 @@ public class LocationRequest: LocationManagerRequest {
 	
 	- returns: return self instance in order to perform a chain of handlers
 	*/
-	public func onPause(handler: LocationHandlerPaused) -> LocationRequest {
+	public func onPause(_ handler: LocationHandlerPaused) -> LocationRequest {
 		self.onPausesHandler = handler
 		return self
 	}
@@ -159,23 +159,23 @@ public class LocationRequest: LocationManagerRequest {
 	
 	//MARK: - Private Methods
 	
-	internal func setTimeoutTimer(start: Bool) {
+	internal func setTimeoutTimer(_ start: Bool) {
 		if let _ = self.timeoutTimer {
 			self.timeoutTimer!.invalidate()
 			self.timeoutTimer = nil
 		}
 		guard start == true, let interval = self.timeout else { return }
-		self.timeoutTimer = NSTimer(timeInterval: interval, target: self, selector: #selector(timeoutTimerFired), userInfo: nil, repeats: false)
+		self.timeoutTimer = Timer(timeInterval: interval, target: self, selector: #selector(timeoutTimerFired), userInfo: nil, repeats: false)
 	}
 	
 	@objc func timeoutTimerFired() {
 		if self.onErrorHandler != nil {
-			self.onErrorHandler!(LocationError.RequestTimeout)
+			self.onErrorHandler!(LocationError.requestTimeout)
 		}
 		self.stop()
 	}
 	
-	internal func didReceiveEventFromLocationManager(error error: LocationError?, location: CLLocation?) -> Bool {
+	internal func didReceiveEventFromLocationManager(error: LocationError?, location: CLLocation?) -> Bool {
 		if let error = error {
 			self.onErrorHandler?(error)
 			self.stop()
@@ -188,7 +188,7 @@ public class LocationRequest: LocationManagerRequest {
 			}
 			self.lastLocation = location
 			self.onSuccessHandler?(self.lastLocation!)
-			if self.frequency == .OneShot {
+			if self.frequency == .oneShot {
 				self.stop()
 			}
 			self.setTimeoutTimer(true)
@@ -198,14 +198,14 @@ public class LocationRequest: LocationManagerRequest {
 		return false
 	}
 	
-	internal func isValidLocation(loc: CLLocation) -> Bool {
+	internal func isValidLocation(_ loc: CLLocation) -> Bool {
 		if self.accuracy.isLocationValidForAccuracy(loc) == false {
 			return false
 		}
 		
 		if let lastLocation = self.lastLocation {
-			if case .ByDistanceIntervals(let meters) = self.frequency {
-				let distanceSinceLastReport = lastLocation.distanceFromLocation(loc)
+			if case .byDistanceIntervals(let meters) = self.frequency {
+				let distanceSinceLastReport = lastLocation.distance(from: loc)
 				if distanceSinceLastReport < meters {
 					return false
 				}
@@ -222,7 +222,7 @@ public class LocationRequest: LocationManagerRequest {
 	
 	public func reverseLocation(onSuccess sHandler: RLocationSuccessHandler, onError fHandler: RLocationErrorHandler) throws  {
 		guard let loc = self.lastLocation else {
-			throw LocationError.LocationNotAvailable
+			throw LocationError.locationNotAvailable
 		}
 		LocationManager.shared.reverseLocation(location: loc, onSuccess: sHandler, onError: fHandler)
 	}
