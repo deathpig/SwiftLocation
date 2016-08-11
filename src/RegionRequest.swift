@@ -67,7 +67,7 @@ public class RegionRequest : Equatable {
 	- returns: the request itself you can add to the main queue
 	*/
 	public init(identifier: String?, location: CLLocationCoordinate2D, radius: CLLocationDistance) {
-		let regionID = (identifier ?? UUID().uuidString)
+		let regionID = (identifier ?? NSUUID().uuidString)
 		self.region = CLCircularRegion(center: location, radius: radius, identifier: regionID)
 	}
 	
@@ -78,7 +78,7 @@ public class RegionRequest : Equatable {
 	
 	- returns: self, used to make the function chainable
 	*/
-	public func onRegionEntered(_ handler: RegionHandlerStateDidChange?) -> RegionRequest {
+	public func onRegionEntered(handler: RegionHandlerStateDidChange?) -> RegionRequest {
 		self.onRegionEntered = handler
 		return self
 	}
@@ -90,7 +90,7 @@ public class RegionRequest : Equatable {
 	
 	- returns: self, used to make the function chainable
 	*/
-	public func onRegionExited(_ handler: RegionHandlerStateDidChange?) -> RegionRequest {
+	public func onRegionExited(handler: RegionHandlerStateDidChange?) -> RegionRequest {
 		self.onRegionExited = handler
 		return self
 	}
@@ -103,7 +103,7 @@ public class RegionRequest : Equatable {
 	
 	- returns: self, used to make the function chainable
 	*/
-	public func onRegionDidFailToMonitor(_ handler: RegionHandlerError?) -> RegionRequest {
+	public func onRegionDidFailToMonitor(handler: RegionHandlerError?) -> RegionRequest {
 		self.onRegionDidFailToMonitor = handler
 		BeaconManager.shared.stopMonitorGeographicRegion(request: self)
 		return self
@@ -115,7 +115,7 @@ public class RegionRequest : Equatable {
 	- throws: throws error if monitor is not supported
 	*/
 	public func start() throws {
-		try BeaconManager.shared.addMonitorForGeographicRegion(self)
+		try BeaconManager.shared.addMonitorForGeographicRegion(region: self)
 	}
 	
 	/**

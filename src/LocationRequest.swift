@@ -40,12 +40,12 @@ public class LocationRequest: LocationManagerRequest {
 		/// Timeout timer
 	private var timeoutTimer: Timer?
 		/// Unique identifier of the request
-	internal var UUID: String = Foundation.UUID().uuidString
+	internal var UUID: String = NSUUID().uuidString
 		/// Enable/disable ability of the request object to receive updates when into the queue
 	internal var isEnabled: Bool = true {
 		didSet {
 			let shouldEnable = isEnabled
-			self.setTimeoutTimer(shouldEnable)
+			self.setTimeoutTimer(start: shouldEnable)
 		}
 	}
 	
@@ -68,14 +68,14 @@ public class LocationRequest: LocationManagerRequest {
 	private(set) var lastLocation: CLLocation?
 	
 		/// This is the frequency internval you want to receive updates about this monitor session
-	public var frequency: UpdateFrequency = .continuous {
+	public var frequency: UpdateFrequency = .Continuous {
 		didSet {
 			LocationManager.shared.updateLocationUpdateService()
 		}
 	}
 	
 		/// This is the accuracy of location you consider valid for this monitor session
-	public var accuracy: Accuracy = .city {
+	public var accuracy: Accuracy = .City {
 		didSet {
 			LocationManager.shared.updateLocationUpdateService()
 		}
@@ -101,7 +101,8 @@ public class LocationRequest: LocationManagerRequest {
 	
 	- returns: return self instance in order to perform a chain of handlers
 	*/
-	public func onError(_ err: LocationHandlerError) -> LocationRequest {
+    @discardableResult
+	public func onError(err: LocationHandlerError) -> LocationRequest {
 		self.onErrorHandler = err
 		return self
 	}
@@ -113,7 +114,8 @@ public class LocationRequest: LocationManagerRequest {
 	
 	- returns: return self instance in order to perform a chain of handlers
 	*/
-	public func onSuccess(_ succ: LocationHandlerSuccess) -> LocationRequest {
+    @discardableResult
+	public func onSuccess(succ: LocationHandlerSuccess) -> LocationRequest {
 		self.onSuccessHandler = succ
 		return self
 	}
@@ -127,7 +129,8 @@ public class LocationRequest: LocationManagerRequest {
 	
 	- returns: return self instance in order to perform a chain of handlers
 	*/
-	public func onPause(_ handler: LocationHandlerPaused) -> LocationRequest {
+    @discardableResult
+	public func onPause(handler: LocationHandlerPaused) -> LocationRequest {
 		self.onPausesHandler = handler
 		return self
 	}
@@ -137,8 +140,8 @@ public class LocationRequest: LocationManagerRequest {
 	*/
 	public func stop() {
 		self.isEnabled = false
-		self.setTimeoutTimer(false)
-		LocationManager.shared.stopObservingLocation(self)
+		self.setTimeoutTimer(start: false)
+		LocationManager.shared.stopObservingLocation(request: self)
 	}
 	
 	/**
@@ -154,12 +157,12 @@ public class LocationRequest: LocationManagerRequest {
 	*/
 	public func start() {
 		self.isEnabled = true
-		LocationManager.shared.addLocationRequest(self)
+		LocationManager.shared.addLocationRequest(handler: self)
 	}
 	
 	//MARK: - Private Methods
 	
-	internal func setTimeoutTimer(_ start: Bool) {
+	internal func setTimeoutTimer(start: Bool) {
 		if let _ = self.timeoutTimer {
 			self.timeoutTimer!.invalidate()
 			self.timeoutTimer = nil
@@ -170,11 +173,12 @@ public class LocationRequest: LocationManagerRequest {
 	
 	@objc func timeoutTimerFired() {
 		if self.onErrorHandler != nil {
-			self.onErrorHandler!(LocationError.requestTimeout)
+			self.onErrorHandler!(LocationError.RequestTimeout)
 		}
 		self.stop()
 	}
 	
+    @discardableResult
 	internal func didReceiveEventFromLocationManager(error: LocationError?, location: CLLocation?) -> Bool {
 		if let error = error {
 			self.onErrorHandler?(error)
@@ -183,28 +187,29 @@ public class LocationRequest: LocationManagerRequest {
 		}
 		
 		if let location = location {
-			if self.isValidLocation(location) == false {
+			if self.isValidLocation(loc: location) == false {
 				return false
 			}
 			self.lastLocation = location
 			self.onSuccessHandler?(self.lastLocation!)
-			if self.frequency == .oneShot {
+			if self.frequency == .OneShot {
 				self.stop()
 			}
-			self.setTimeoutTimer(true)
+			self.setTimeoutTimer(start: true)
 			return true
 		}
 		
 		return false
 	}
 	
-	internal func isValidLocation(_ loc: CLLocation) -> Bool {
-		if self.accuracy.isLocationValidForAccuracy(loc) == false {
+    @discardableResult
+	internal func isValidLocation(loc: CLLocation) -> Bool {
+		if self.accuracy.isLocationValidForAccuracy(obj: loc) == false {
 			return false
 		}
 		
 		if let lastLocation = self.lastLocation {
-			if case .byDistanceIntervals(let meters) = self.frequency {
+			if case .ByDistanceIntervals(let meters) = self.frequency {
 				let distanceSinceLastReport = lastLocation.distance(from: loc)
 				if distanceSinceLastReport < meters {
 					return false
@@ -222,7 +227,7 @@ public class LocationRequest: LocationManagerRequest {
 	
 	public func reverseLocation(onSuccess sHandler: RLocationSuccessHandler, onError fHandler: RLocationErrorHandler) throws  {
 		guard let loc = self.lastLocation else {
-			throw LocationError.locationNotAvailable
+			throw LocationError.LocationNotAvailable
 		}
 		LocationManager.shared.reverseLocation(location: loc, onSuccess: sHandler, onError: fHandler)
 	}

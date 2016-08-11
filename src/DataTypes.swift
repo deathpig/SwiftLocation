@@ -57,8 +57,8 @@ Type of service to used to perform the request
 - Google: google own services (maybe limited in quota usage)
 */
 public enum ReverseService {
-	case apple
-	case google
+	case Apple
+	case Google
 }
 
 internal struct CLPlacemarkDictionaryKey {
@@ -95,33 +95,33 @@ Define all possible error related to SwiftLocation library
 - NotSupported:                Feature is not supported by the current hardware
 */
 public enum LocationError: ErrorProtocol, CustomStringConvertible {
-	case missingAuthorizationInPlist
-	case requestTimeout
-	case authorizationDidChange(newStatus: CLAuthorizationStatus)
-	case locationManager(error: NSError?)
-	case locationNotAvailable
-	case noDataReturned
-	case notSupported
+	case MissingAuthorizationInPlist
+	case RequestTimeout
+	case AuthorizationDidChange(newStatus: CLAuthorizationStatus)
+	case LocationManager(error: NSError?)
+	case LocationNotAvailable
+	case NoDataReturned
+	case NotSupported
 	
 	public var description: String {
 		switch self {
-		case .missingAuthorizationInPlist:
+		case .MissingAuthorizationInPlist:
 			return "Missing Authorization in .plist file"
-		case .requestTimeout:
+		case .RequestTimeout:
 			return "Timeout for request"
-		case .authorizationDidChange:
+		case .AuthorizationDidChange:
 			return "Authorization did change"
-		case .locationManager(let err):
+		case .LocationManager(let err):
 			if let error = err {
 				return "Location manager error: \(error.localizedDescription)"
 			} else {
 				return "Generic location manager error"
 			}
-		case .locationNotAvailable:
+		case .LocationNotAvailable:
 			return "Location not avaiable"
-		case .noDataReturned:
+		case .NoDataReturned:
 			return "No Data Returned"
-		case .notSupported:
+		case .NotSupported:
 			return "Feature Not Supported"
 		}
 	}
@@ -136,18 +136,18 @@ Location service state
 - Authorized:   This app is authorized to use location services.
 */
 public enum LocationServiceState: Equatable {
-	case disabled
-	case undetermined
-	case denied
-	case restricted
-	case authorized(always: Bool)
+	case Disabled
+	case Undetermined
+	case Denied
+	case Restricted
+	case Authorized(always: Bool)
 }
 
 public func == (lhs: LocationServiceState, rhs: LocationServiceState) -> Bool {
 	switch (lhs,rhs) {
-	case (.authorized(let a1), .authorized(let a2)):
+	case (.Authorized(let a1), .Authorized(let a2)):
 		return a1 == a2
-	case (.disabled,.disabled), (.undetermined,.undetermined), (.denied,.denied), (.restricted,.restricted):
+	case (.Disabled,.Disabled), (.Undetermined,.Undetermined), (.Denied,.Denied), (.Restricted,.Restricted):
 		return true
 	default:
 		return false
@@ -162,9 +162,9 @@ Location authorization status
 - OnlyInUse: app can receive location updates only in foreground
 */
 public enum LocationAuthType {
-	case none
-	case always
-	case onlyInUse
+	case None
+	case Always
+	case OnlyInUse
 }
 
 // MARK: - CLLocationManager
@@ -175,20 +175,20 @@ extension CLLocationManager {
 	public static var locationAuthStatus: LocationServiceState {
 		get {
 			if CLLocationManager.locationServicesEnabled() == false {
-				return .disabled
+				return .Disabled
 			} else {
 				let status = CLLocationManager.authorizationStatus()
 				switch status {
 				case .notDetermined:
-					return .undetermined
+					return .Undetermined
 				case .denied:
-					return .denied
+					return .Denied
 				case .restricted:
-					return .restricted
+					return .Restricted
 				case .authorizedAlways:
-					return .authorized(always: true)
+					return .Authorized(always: true)
 				case .authorizedWhenInUse:
-					return .authorized(always: false)
+					return .Authorized(always: false)
 				}
 			}
 		}
@@ -204,9 +204,9 @@ extension CLLocationManager {
 		let hasAlwaysAuth = (Bundle.main.objectForInfoDictionaryKey("NSLocationAlwaysUsageDescription") != nil)
 		let hasInUseAuth = (Bundle.main.objectForInfoDictionaryKey("NSLocationWhenInUseUsageDescription") != nil)
 		
-		if hasAlwaysAuth == true { return .always }
-		if hasInUseAuth == true { return .onlyInUse }
-		return .none
+		if hasAlwaysAuth == true { return .Always }
+		if hasInUseAuth == true { return .OnlyInUse }
+		return .None
 	}
 }
 
@@ -215,34 +215,34 @@ extension CLLocationManager {
 /// Accuracy of the location you want to achieve
 public enum Accuracy: Int {
 	/// First available location is accepted, no matter the accuracy
-	case any = 0
+	case Any = 0
 	/// Only locations accurate to the nearest 100 kilometers are dispatched
-	case country = 1
+	case Country = 1
 	/// Only locations accurate to the nearest three kilometers are dispatched
-	case city = 2
+	case City = 2
 	/// Only locations accurate to the nearest kilometer are dispatched
-	case neighborhood = 3
+	case Neighborhood = 3
 	/// Only locations accurate to the nearest one hundred meters are dispatched
-	case block = 4
+	case Block = 4
 	/// Only locations accurate to the nearest ten meters are dispatched
-	case house = 5
+	case House = 5
 	/// Use the highest-level of accuracy, may use high energy
-	case room = 6
+	case Room = 6
 	// Use the highest possible accuracy and combine it with additional sensor data. Use it only for
 	// applications that require precise position information ar all times (you should use it only when device is plugged in
 	// due to high battery usage level)
-	case navigation = 7
+	case Navigation = 7
 	
 	public var meters: Double {
 		switch self {
-		case any:			return Double.infinity
-		case country:		return 100000.0
-		case city:			return kCLLocationAccuracyThreeKilometers
-		case neighborhood:	return kCLLocationAccuracyKilometer
-		case block:			return kCLLocationAccuracyHundredMeters
-		case house:			return kCLLocationAccuracyNearestTenMeters
-		case room:			return kCLLocationAccuracyBest
-		case navigation:	return kCLLocationAccuracyBestForNavigation
+		case Any:			return Double.infinity
+		case Country:		return 100000.0
+		case City:			return kCLLocationAccuracyThreeKilometers
+		case Neighborhood:	return kCLLocationAccuracyKilometer
+		case Block:			return kCLLocationAccuracyHundredMeters
+		case House:			return kCLLocationAccuracyNearestTenMeters
+		case Room:			return kCLLocationAccuracyBest
+		case Navigation:	return kCLLocationAccuracyBestForNavigation
 		}
 	}
 	
@@ -253,7 +253,7 @@ public enum Accuracy: Int {
 	
 	- returns: true if location has an accuracy equal or grater than the one set by the struct itself
 	*/
-	internal func isLocationValidForAccuracy(_ obj: CLLocation) -> Bool {
+	internal func isLocationValidForAccuracy(obj: CLLocation) -> Bool {
 		let hAccuracy = obj.horizontalAccuracy
 		return (hAccuracy <= self.meters)
 	}
@@ -271,17 +271,17 @@ is added to the main queue of the location manager.
 - Significant:         receive only valid significant location updates. This capability provides tremendous power savings for apps that want to track a user’s approximate location and do not need highly accurate position information.
 */
 public enum UpdateFrequency: Equatable, Comparable {
-	case continuous
-	case oneShot
-	case byDistanceIntervals(meters: Double)
-	case significant
+	case Continuous
+	case OneShot
+	case ByDistanceIntervals(meters: Double)
+	case Significant
 }
 
 public func == (lhs: UpdateFrequency, rhs: UpdateFrequency) -> Bool {
 	switch (lhs,rhs) {
-	case (.byDistanceIntervals(let d1), .byDistanceIntervals(let d2)) where d1 == d2:
+	case (.ByDistanceIntervals(let d1), .ByDistanceIntervals(let d2)) where d1 == d2:
 		return true
-	case (.continuous,.continuous), (.oneShot, .oneShot), (.significant, .significant):
+	case (.Continuous,.Continuous), (.OneShot, .OneShot), (.Significant, .Significant):
 		return true
 	default:
 		return false
@@ -307,11 +307,11 @@ public func >= (lhs: UpdateFrequency, rhs: UpdateFrequency) -> Bool {
 
 private func u_lowerThan(includeEqual e: Bool, lhs: UpdateFrequency, rhs: UpdateFrequency) -> Bool {
 	switch (lhs, rhs) {
-	case (.continuous, _), (.oneShot, _):
+	case (.Continuous, _), (.OneShot, _):
 		return true
-	case (.byDistanceIntervals(let d1),.byDistanceIntervals(let d2)):
+	case (.ByDistanceIntervals(let d1),.ByDistanceIntervals(let d2)):
 		return (e == true ? d1 <= d2 : d1 < d2)
-	case (.significant, .significant):
+	case (.Significant, .Significant):
 		return true
 	default:
 		return false
@@ -320,9 +320,9 @@ private func u_lowerThan(includeEqual e: Bool, lhs: UpdateFrequency, rhs: Update
 
 private func u_graterThan(includeEqual e: Bool, lhs: UpdateFrequency, rhs: UpdateFrequency) -> Bool {
 	switch (lhs, rhs) {
-	case (.significant, _):
+	case (.Significant, _):
 		return true
-	case (.byDistanceIntervals(let d1),.byDistanceIntervals(let d2)):
+	case (.ByDistanceIntervals(let d1),.ByDistanceIntervals(let d2)):
 		return (e == true ? d1 >= d2 : d1 > d2)
 	default:
 		return false

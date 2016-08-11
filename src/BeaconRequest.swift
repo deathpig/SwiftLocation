@@ -31,9 +31,9 @@ import CoreLocation
 import CoreBluetooth
 
 public enum BeaconState {
-	case unknown
-	case advertising
-	case monitoring
+	case Unknown
+	case Advertising
+	case Monitoring
 }
 
 public class BeaconRequest: Equatable {
@@ -50,14 +50,14 @@ public class BeaconRequest: Equatable {
 	/// The major property contains a value that can be used to group related sets of beacons. For example, a department store might assign the same major value for all of the beacons on the same floor.
 	public var majorID: CLBeaconMajorValue? {
 		get {
-			return (beaconRegion!.major != nil ? CLBeaconMajorValue(beaconRegion!.major!.int32Value) : nil)
+			return (beaconRegion!.major != nil ? CLBeaconMajorValue(beaconRegion!.major!.intValue) : nil)
 		}
 	}
 	
 	/// The minor property specifies the individual beacon within a group. For example, for a group of beacons on the same floor of a department store, this value might be assigned to a beacon in a particular section.
 	public var minorID: CLBeaconMajorValue? {
 		get {
-			return (beaconRegion!.major != nil ? CLBeaconMajorValue(beaconRegion!.major!.int32Value) : nil)
+			return (beaconRegion!.major != nil ? CLBeaconMajorValue(beaconRegion!.major!.intValue) : nil)
 		}
 	}
 	
@@ -65,7 +65,7 @@ public class BeaconRequest: Equatable {
 	private(set) var beaconRegion: CLBeaconRegion?
 	
 		/// State of the monitor
-	internal(set) var state: BeaconState = .unknown
+	internal(set) var state: BeaconState = .Unknown
 	
 		/// Handler called when beacon were found into the region
 	public var onRangeDidFoundBeacons: DidRangeBeaconsHandler?
@@ -81,8 +81,8 @@ public class BeaconRequest: Equatable {
 	- returns: request you can add into the main queue
 	*/
 	public init(beaconFamilyWithUUID uuid: String, identifier: String? = nil) {
-		self.identifier = (identifier ?? Foundation.UUID().uuidString)
-		self.beaconRegion = CLBeaconRegion(proximityUUID: Foundation.UUID(uuidString: self.UUID)!, identifier: self.identifier)
+		self.identifier = (identifier ?? NSUUID().uuidString)
+		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(uuidString: self.UUID)! as UUID, identifier: self.identifier)
 	}
 	
 	/**
@@ -96,8 +96,8 @@ public class BeaconRequest: Equatable {
 	- returns: request you can add into the main queue
 	*/
 	public init(beaconWithUUID uuid: String, major: CLBeaconMajorValue, minor: CLBeaconMajorValue, identifier: String? = nil) {
-		self.identifier = (identifier ?? Foundation.UUID().uuidString)
-		self.beaconRegion = CLBeaconRegion(proximityUUID: Foundation.UUID(uuidString: self.UUID)!, major: self.majorID!, minor: self.minorID!, identifier: self.identifier)
+		self.identifier = (identifier ?? NSUUID().uuidString)
+		self.beaconRegion = CLBeaconRegion(proximityUUID: NSUUID(uuidString: self.UUID)! as UUID, major: self.majorID!, minor: self.minorID!, identifier: self.identifier)
 	}
 
 	//MARK: Private
