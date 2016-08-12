@@ -31,6 +31,7 @@ import CoreLocation
 import MapKit
 
 public class LocationManager: NSObject, CLLocationManagerDelegate {
+    /*
 	//MARK: Public Variables
 	private(set) var lastLocation: CLLocation?
 
@@ -42,7 +43,7 @@ public class LocationManager: NSObject, CLLocationManagerDelegate {
 	public var allowsBackgroundEvents: Bool = false {
 		didSet {
 			if #available(iOS 9.0, *) {
-				if let backgroundModes = Bundle.main.objectForInfoDictionaryKey("UIBackgroundModes") as? NSArray {
+				if let backgroundModes = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? NSArray {
 					if backgroundModes.contains("location") {
 						self.manager.allowsBackgroundLocationUpdates = allowsBackgroundEvents
 					} else {
@@ -315,7 +316,7 @@ public class LocationManager: NSObject, CLLocationManagerDelegate {
 			return
 		}
 		
-		let minAngle = enabledObservers.min(isOrderedBefore: {return ($0.degreesInterval == nil || $0.degreesInterval < $1.degreesInterval) })!.degreesInterval
+		let minAngle = enabledObservers.min(by: {return ($0.degreesInterval == nil || $0.degreesInterval < $1.degreesInterval) })!.degreesInterval
 		self.manager.headingFilter = (minAngle == nil ? kCLDistanceFilterNone : minAngle!)
 		self.manager.headingOrientation = self.headingOrientation
 		self.manager.startUpdatingHeading()
@@ -436,7 +437,7 @@ public class LocationManager: NSObject, CLLocationManagerDelegate {
 	}
 	
 	@objc public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-		self.lastLocation = locations.max(isOrderedBefore: { (l1, l2) -> Bool in
+		self.lastLocation = locations.max(by: { (l1, l2) -> Bool in
 			return l1.timestamp.timeIntervalSince1970 < l2.timestamp.timeIntervalSince1970}
 		)
 		self.locationObservers.forEach { handler in
@@ -641,5 +642,5 @@ public class LocationManager: NSObject, CLLocationManagerDelegate {
 		}
 		return (nil,false) // okay!
 	}
-	
+*/	
 }

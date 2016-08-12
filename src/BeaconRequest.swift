@@ -37,6 +37,7 @@ public enum BeaconState {
 }
 
 public class BeaconRequest: Equatable {
+    /*
 		/// Identifier of the request
 	private(set) var identifier: String
 	
@@ -109,7 +110,7 @@ public class BeaconRequest: Equatable {
 			CBAdvertisementDataServiceUUIDsKey : [self.UUID]]
 		return data
 	}
-	
+	*/
 }
 
 public func == (lhs: BeaconRequest, rhs: BeaconRequest) -> Bool {

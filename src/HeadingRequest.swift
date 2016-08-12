@@ -30,6 +30,7 @@ import Foundation
 import CoreLocation
 
 public class HeadingRequest: LocationManagerRequest {
+    /*
 		/// Unique identifier of the heading request
 	internal var UUID: String = NSUUID().uuidString
 		/// Handler to call when a new heading value is received
@@ -158,4 +159,5 @@ public class HeadingRequest: LocationManagerRequest {
 		guard let degreesInterval = self.degreesInterval else { return true }
 		return (fabs( Double(heading.headingAccuracy-lastHeading.headingAccuracy) ) > degreesInterval)
 	}
+ */
 }

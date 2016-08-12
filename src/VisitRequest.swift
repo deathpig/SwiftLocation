@@ -31,6 +31,7 @@ import Foundation
 import CoreLocation
 
 public class VisitRequest {
+    /*
 		/// Last place received
 	private(set) var lastPlace: CLVisit?
 		/// Handler called when a new place is currently visited
@@ -77,4 +78,5 @@ public class VisitRequest {
 	public func stop() {
 		LocationManager.shared.stopObservingInterestingPlaces(request: self)
 	}
+ */
 }

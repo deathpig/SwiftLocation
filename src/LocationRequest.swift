@@ -31,6 +31,7 @@ import CoreLocation
 import MapKit
 
 public class LocationRequest: LocationManagerRequest {
+    /*
 		/// Handler called on error
 	internal var onErrorHandler: LocationHandlerError?
 		/// Handler called on success
@@ -75,7 +76,7 @@ public class LocationRequest: LocationManagerRequest {
 	}
 	
 		/// This is the accuracy of location you consider valid for this monitor session
-	public var accuracy: Accuracy = .City {
+	public var accuracy: Accuracy = .city {
 		didSet {
 			LocationManager.shared.updateLocationUpdateService()
 		}
@@ -231,5 +232,5 @@ public class LocationRequest: LocationManagerRequest {
 		}
 		LocationManager.shared.reverseLocation(location: loc, onSuccess: sHandler, onError: fHandler)
 	}
-	
+*/	
 }

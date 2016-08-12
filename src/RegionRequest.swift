@@ -32,6 +32,7 @@ import CoreLocation
 import CoreBluetooth
 
 public class RegionRequest : Equatable {
+    /*
 		/// Region to monitor
 	internal var region: CLCircularRegion
 		/// Is region currently monitored?
@@ -124,7 +125,7 @@ public class RegionRequest : Equatable {
 	public func stop() {
 		BeaconManager.shared.stopMonitorGeographicRegion(request: self)
 	}
-	
+*/	
 }
 
 public func == (lhs: RegionRequest, rhs: RegionRequest) -> Bool {

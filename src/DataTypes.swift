@@ -94,7 +94,7 @@ Define all possible error related to SwiftLocation library
 - NoDataReturned:              No data returned from this request
 - NotSupported:                Feature is not supported by the current hardware
 */
-public enum LocationError: ErrorProtocol, CustomStringConvertible {
+public enum LocationError: Error, CustomStringConvertible {
 	case MissingAuthorizationInPlist
 	case RequestTimeout
 	case AuthorizationDidChange(newStatus: CLAuthorizationStatus)
@@ -201,8 +201,8 @@ extension CLLocationManager {
 		/// Value of these keys if the message you want to show into system location request message the first time you
 		/// will access to the location manager.
 	internal static var bundleLocationAuthType: LocationAuthType {
-		let hasAlwaysAuth = (Bundle.main.objectForInfoDictionaryKey("NSLocationAlwaysUsageDescription") != nil)
-		let hasInUseAuth = (Bundle.main.objectForInfoDictionaryKey("NSLocationWhenInUseUsageDescription") != nil)
+		let hasAlwaysAuth = (Bundle.main.object(forInfoDictionaryKey: "NSLocationAlwaysUsageDescription") != nil)
+		let hasInUseAuth = (Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription") != nil)
 		
 		if hasAlwaysAuth == true { return .Always }
 		if hasInUseAuth == true { return .OnlyInUse }
@@ -215,34 +215,34 @@ extension CLLocationManager {
 /// Accuracy of the location you want to achieve
 public enum Accuracy: Int {
 	/// First available location is accepted, no matter the accuracy
-	case Any = 0
+	case any = 0
 	/// Only locations accurate to the nearest 100 kilometers are dispatched
-	case Country = 1
+	case country = 1
 	/// Only locations accurate to the nearest three kilometers are dispatched
-	case City = 2
+	case city = 2
 	/// Only locations accurate to the nearest kilometer are dispatched
-	case Neighborhood = 3
+	case neighborhood = 3
 	/// Only locations accurate to the nearest one hundred meters are dispatched
-	case Block = 4
+	case block = 4
 	/// Only locations accurate to the nearest ten meters are dispatched
-	case House = 5
+	case house = 5
 	/// Use the highest-level of accuracy, may use high energy
-	case Room = 6
+	case room = 6
 	// Use the highest possible accuracy and combine it with additional sensor data. Use it only for
 	// applications that require precise position information ar all times (you should use it only when device is plugged in
 	// due to high battery usage level)
-	case Navigation = 7
+	case navigation = 7
 	
 	public var meters: Double {
 		switch self {
-		case Any:			return Double.infinity
-		case Country:		return 100000.0
-		case City:			return kCLLocationAccuracyThreeKilometers
-		case Neighborhood:	return kCLLocationAccuracyKilometer
-		case Block:			return kCLLocationAccuracyHundredMeters
-		case House:			return kCLLocationAccuracyNearestTenMeters
-		case Room:			return kCLLocationAccuracyBest
-		case Navigation:	return kCLLocationAccuracyBestForNavigation
+		case .any:			return Double.infinity
+		case .country:		return 100000.0
+		case .city:			return kCLLocationAccuracyThreeKilometers
+		case .neighborhood:	return kCLLocationAccuracyKilometer
+		case .block:			return kCLLocationAccuracyHundredMeters
+		case .house:			return kCLLocationAccuracyNearestTenMeters
+		case .room:			return kCLLocationAccuracyBest
+		case .navigation:	return kCLLocationAccuracyBestForNavigation
 		}
 	}
 	
